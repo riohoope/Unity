@@ -899,11 +899,19 @@ namespace EVMC4U
 
             //読み込み
             GlbLowLevelParser glbLowLevelParser = new GlbLowLevelParser(null, VRMdata);
+            Debug.Log("a");
             GltfData gltfData = glbLowLevelParser.Parse();
+            Debug.Log("aa");
             VRMData vrm = new VRMData(gltfData);
+
+            Debug.Log("aaa");
             VRMImporterContext vrmImporter = new VRMImporterContext(vrm);
 
+            Debug.Log("aaaa");
+
             isLoading = true;
+
+            Debug.Log("aaaaa");
 
             synchronizationContext.Post(async (arg) => {
                 RuntimeGltfInstance instance = await vrmImporter.LoadAsync(new VRMShaders.ImmediateCaller());

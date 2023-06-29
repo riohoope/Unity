@@ -4,7 +4,10 @@ using UnityEngine;
 using System.Windows.Forms; //OpenFileDialog用に使う
 using System.IO;
 using UnityEngine.UI;
-using EVMC4U;
+using EVMC4U;   //namespaceの関数を使う
+using VRM;
+using UniGLTF;
+using UniHumanoid;
 //using SFB;
 
 
@@ -12,6 +15,7 @@ public class OpenFileButton : MonoBehaviour
 {
     public bool modelReadFlag;
     public static string filePass;
+    [SerializeField] private VRMImporterContext context;
     //public InputField fileNameField;
     GameObject teacherModel;
 
@@ -19,7 +23,7 @@ public class OpenFileButton : MonoBehaviour
     {
         modelReadFlag = false;
         teacherModel = GameObject.Find("ExternalReciever");
-        //this.teacherModel = GameObject.Find("ExternalReciever");
+        this.teacherModel = GameObject.Find("ExternalReciever");
 
         if (Directory.Exists(UnityEngine.Application.dataPath + "\\Model") == false) //Modelフォルダが存在しなければ自動的に作成
         {
@@ -27,7 +31,7 @@ public class OpenFileButton : MonoBehaviour
         }
     }
 
-    public ExternalReceiver externalReceiver;
+    public ExternalReceiver externalReceiver;  //他オブジェクトの関数を使う
 
     public void ReadVRMFile()
     {
@@ -46,7 +50,7 @@ public class OpenFileButton : MonoBehaviour
             if (Path.GetExtension(path) == ".vrm")
             {
                 //StartCoroutine(StreamVRMFile(path));
-                //ImportVRMSync(path);
+                //ImportVRMAsync(path);
                 externalReceiver.LoadVRM(path);
             }
             else
@@ -57,13 +61,14 @@ public class OpenFileButton : MonoBehaviour
         }
     }
 
-    //public void ImportVRMSync(string path)
+    //private void ImportVRMAsync(string path)
     //{
+
     //    //ファイルをByte配列に読み込みます
     //    var bytes = File.ReadAllBytes(path);
 
     //    //VRMImporterContextがVRMを読み込む機能を提供します
-    //    var context = new VRMImporterContext();
+    //    var context = new VRMImporterContext(null, null, null, null);
 
     //    // GLB形式でJSONを取得しParseします
     //    context.ParseGlb(bytes);
@@ -74,33 +79,39 @@ public class OpenFileButton : MonoBehaviour
     //    //読み込めたかどうかログにモデル名を出力してみる
     //    Debug.LogFormat("meta: title:{0}", meta.Title);
 
-    //    //同期処理で読み込みます
-    //    context.Load();
+    //    //非同期処理で読み込みます
+    //    context.LoadAsync(_ => OnLoaded(context));
+    //}
 
+    //private void OnLoaded(VRMImporterContext context)
+    //{
     //    //読込が完了するとcontext.RootにモデルのGameObjectが入っています
     //    var root = context.Root;
 
     //    //モデルをワールド上に配置します
     //    root.transform.SetParent(transform, false);
+
+    //    //メッシュを表示します
+    //    context.ShowMeshes();
     //}
 
     //public IEnumerator StreamVRMFile(string filePath)
     //{
     //    if (File.Exists(filePath))
     //    {
-    //        //using (WWW www = new WWW("file:///" + filePath))
-    //        //{
-    //        //    UnityEngine.Cursor.lockState = CursorLockMode.Locked; // モデル読込中操作できないようにする
-    //        //    modelReadFlag = true;
-    //        //    yield return www;
-    //        //VRM.VRMImporter.LoadVrmAsync(www.bytes, go =>
-    //        //{
-    //        //go.transform.position = new Vector3(-1.24f, 0f, -3.53f);
-    //        //go.transform.localRotation = Quaternion.Euler(0f, 10f, 0f);
-    //        //go.name = "VRM";
-    //        //ModelSetting(go, filePath);
-    //        //});
-    //        //}
+    //        using (WWW www = new WWW("file:///" + filePath))
+    //        {
+    //            UnityEngine.Cursor.lockState = CursorLockMode.Locked; // モデル読込中操作できないようにする
+    //            modelReadFlag = true;
+    //            yield return www;
+    //            VRM.VRMImporter.LoadVrmAsync(www.bytes, go =>
+    //            {
+    //                go.transform.position = new Vector3(-1.24f, 0f, -3.53f);
+    //                go.transform.localRotation = Quaternion.Euler(0f, 10f, 0f);
+    //                go.name = "VRM";
+    //                ModelSetting(go, filePath);
+    //            });
+    //        }
     //    }
     //    else // Load時のファイル消失対応
     //    {

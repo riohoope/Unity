@@ -385,8 +385,16 @@ PrefabInstance:
       value: Simple Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 6797366378739129055, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+      propertyPath: m_text
+      value: Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797366378739129055, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
       propertyPath: m_textAlignment
       value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797366378739129055, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 6797366378739129055, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
       propertyPath: m_VerticalAlignment
@@ -556,7 +564,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelReadFlag: 0
-  externalReceiver: {fileID: 0}
 --- !u!1 &1078260462
 GameObject:
   m_ObjectHideFlags: 0

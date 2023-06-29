@@ -12,6 +12,11 @@ namespace VRM
 {
     public class VRMImporterContext : ImporterContext
     {
+        // //デフォルトコンストラクタ hatakeyama
+        // public VRMImporterContext(null)
+        // {
+        // }
+
         VRMData _data;
         public VRM.glTF_VRM_extensions VRM
         {
