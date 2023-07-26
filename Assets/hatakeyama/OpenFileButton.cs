@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,21 +7,26 @@ using System.IO;
 using UnityEngine.UI;
 using EVMC4U;   //namespaceの関数を使う
 using VRM;
+using VRMShaders;
 using UniGLTF;
 using UniHumanoid;
-//using SFB;
+using SFB;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 public class OpenFileButton : MonoBehaviour
 {
     public bool modelReadFlag;
     public static string filePass;
-    [SerializeField] private VRMImporterContext context;
+    //[SerializeField] private VRMImporterContext context;
     //public InputField fileNameField;
     GameObject teacherModel;
 
     void Start()
     {
+        //synchronizationContext = SynchronizationContext.Current;
+
         modelReadFlag = false;
         teacherModel = GameObject.Find("ExternalReciever");
         this.teacherModel = GameObject.Find("ExternalReciever");
@@ -51,7 +57,9 @@ public class OpenFileButton : MonoBehaviour
             {
                 //StartCoroutine(StreamVRMFile(path));
                 //ImportVRMAsync(path);
-                externalReceiver.LoadVRM(path);
+                //externalReceiver.LoadVRM(path);
+                //LoadVRM(path);
+
             }
             else
             {
@@ -60,6 +68,116 @@ public class OpenFileButton : MonoBehaviour
             }
         }
     }
+
+    ////LoadVRM自分で作る
+
+    //[SerializeField, Label("VRMモデルのGameObject")]
+    //public GameObject Model = null;
+    //[SerializeField, Label("読み込んだモデルの親GameObject")]
+    //public GameObject LoadedModelParent = null; //読み込んだモデルの親
+    //[SerializeField, Label("MRモード連動")]
+    //public bool SyncCalibrationModeWithScaleOffsetSynchronize = true; //キャリブレーションモードとスケール設定を連動させる
+    //public Action<GameObject> BeforeModelDestroyAction = null; //破壊時Action
+    //public Action<GameObject> AfterAutoLoadAction = null; //自動ロード時Action
+    ////同期コンテキスト
+    //SynchronizationContext synchronizationContext;
+
+    ////読込中は読み込まない
+    //bool isLoading = false;
+    //public void LoadVRM(string path)
+    //{
+    //    DestroyModel();
+
+    //    //バイナリの読み込み
+    //    if (File.Exists(path))
+    //    {
+    //        byte[] VRMdata = File.ReadAllBytes(path);
+    //        Debug.Log("s");
+    //        LoadVRMFromData(VRMdata);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("VRM load failed.");
+    //    }
+    //}
+    ////ファイルからモデルを読み込む
+    //public void LoadVRMFromData(byte[] VRMdata)
+    //{
+    //    if (isLoading)
+    //    {
+    //        Debug.LogError("Now Loading! load request is rejected.");
+    //        return;
+    //    }
+    //    DestroyModel();
+
+    //    //読み込み
+    //    GlbLowLevelParser glbLowLevelParser = new GlbLowLevelParser(null, VRMdata);
+    //    GltfData gltfData = glbLowLevelParser.Parse();
+    //    VRMData vrm = new VRMData(gltfData);
+    //    VRMImporterContext vrmImporter = new VRMImporterContext(vrm);
+
+    //    isLoading = true;
+
+    //    //ここまでしか動いていない hatakeyama
+
+    //    synchronizationContext.Post(async (arg) => {
+    //        RuntimeGltfInstance instance = await vrmImporter.LoadAsync(new VRMShaders.ImmediateCaller());
+    //        isLoading = false;
+
+    //        Model = instance.Root;
+
+    //        //ExternalReceiverの下にぶら下げる
+    //        LoadedModelParent = new GameObject();
+    //        LoadedModelParent.transform.SetParent(transform, false);
+    //        LoadedModelParent.name = "LoadedModelParent";
+    //        //その下にモデルをぶら下げる
+    //        Model.transform.SetParent(LoadedModelParent.transform, false);
+
+    //        //instance.EnableUpdateWhenOffscreen();
+    //        //instance.ShowMeshes();
+
+    //        ////カメラなどの移動補助のため、頭の位置を格納する
+    //        //animator = Model.GetComponent<Animator>();
+    //        //HeadPosition = animator.GetBoneTransform(HumanBodyBones.Head).position;
+
+    //        ////開放
+    //        //vrmImporter.Dispose();
+    //        //gltfData.Dispose();
+
+    //        ////読み込み後アクションを実行
+    //        //AfterAutoLoadAction?.Invoke(Model);
+    //    }, null);
+    //}
+
+    ////モデル破棄
+    //public void DestroyModel()
+    //{
+    //    //存在すれば即破壊(異常顔防止)
+    //    if (Model != null)
+    //    {
+    //        BeforeModelDestroyAction?.Invoke(Model);
+    //        Destroy(Model);
+    //        Model = null;
+    //    }
+    //    if (LoadedModelParent != null)
+    //    {
+    //        Destroy(LoadedModelParent);
+    //        LoadedModelParent = null;
+    //    }
+    //}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //private void ImportVRMAsync(string path)
     //{
@@ -94,7 +212,6 @@ public class OpenFileButton : MonoBehaviour
     //    //メッシュを表示します
     //    context.ShowMeshes();
     //}
-
     //public IEnumerator StreamVRMFile(string filePath)
     //{
     //    if (File.Exists(filePath))
@@ -104,6 +221,15 @@ public class OpenFileButton : MonoBehaviour
     //            UnityEngine.Cursor.lockState = CursorLockMode.Locked; // モデル読込中操作できないようにする
     //            modelReadFlag = true;
     //            yield return www;
+
+    //            byte[] VRMdata = File.ReadAllBytes(filePath);
+    //            Debug.Log("s");
+    //            GlbLowLevelParser glbLowLevelParser = new GlbLowLevelParser(null, VRMdata);
+    //            GltfData gltfData = glbLowLevelParser.Parse();
+    //            VRMData vrm = new VRMData(gltfData);
+    //            VRMImporterContext VRMImporter = new VRMImporterContext(vrm);
+
+    //            //VRMImporter.LoadVrmAsync(www.bytes, go =>
     //            VRM.VRMImporter.LoadVrmAsync(www.bytes, go =>
     //            {
     //                go.transform.position = new Vector3(-1.24f, 0f, -3.53f);
