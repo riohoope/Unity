@@ -44,6 +44,7 @@ namespace EVMC4U
         }
         void OnKey(KeyInput key)
         {
+            Debug.Log("1");
             if (key.name == Key) {
                 if (key.active == 1) {
                     externalReceiver.Freeze = !externalReceiver.Freeze;
@@ -58,6 +59,14 @@ namespace EVMC4U
                 {
                     externalReceiver.Freeze = !externalReceiver.Freeze;
                 }
+            }
+        }
+        void Update()
+        {
+            // スペース押下で姿勢固定
+            if (Input.GetKey(KeyCode.Space))
+            {
+                externalReceiver.Freeze = !externalReceiver.Freeze;
             }
         }
     }
